@@ -372,23 +372,6 @@ class DodecagonalPrism(Polyhedron):
         ]
         super().__init__("DodecagonalPrism", vertices, faces)
 
-"""
-cube_1 = Cube()
-cube_2 = Cube()
-
-cube_1.summary_for_rhino(0)
-cube_2.rotate(cube_2.vertices[0],cube_2.vertices[3],cube_2.vertices[2])
-#cube_2.rotate(cube_2.vertices[0],cube_2.vertices[3],cube_2.vertices[7])
-cube_2.translate(cube_2.vertices[0],(3,3,3))
-cube_2.summary_for_rhino(1)
-cube_2 = cube_2.attach_to_face(cube_1,0,3)
-"""
-"""
-tetrahedron = Tetrahedron()
-tetrahedron.summary_for_rhino(0)
-cube = Cube()
-cube.summary_for_rhino(1)
-"""
 octahedron = Octahedron()
 octahedron.summary_for_rhino(2)
 triangularprism = TriangularPrism()
