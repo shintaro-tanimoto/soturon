@@ -21,7 +21,7 @@ class Polyhedron:
         scale = target_length / current_length
         self.vertices *= scale
         self.center = self._calculate_center()
-    
+
     def _generate_edges(self):
         edge_set = set()
         for face in self.faces:
@@ -29,7 +29,7 @@ class Polyhedron:
                 a,b = sorted((face[i],face[(i+1)%len(face)]))
                 edge_set.add((a,b))
         return sorted(edge_set)
-    
+
     def summary(self):
         print(f"{self.name}")
         print(f"Vertices ({len(self.vertices)}):")
@@ -47,69 +47,95 @@ class Polyhedron:
         def move_points(points,start,end):
             move_vector = np.array(end, dtype=float) - np.array(start, dtype=float)
             return np.array(points, dtype=float) + move_vector
-        
+
         self.vertices = move_points(self.vertices,start,end)
         self.center = self._calculate_center()
-    
-    def rotate(self,origin,p0,p1):
-        def rotate(points,axis,angle_rad,origin):
-            points = np.array(points, dtype=float)
-            axis = np.array(axis, dtype=float)
-            origin = np.array(origin, dtype=float)
 
-            # 回転オブジェクト作成（軸×角度）
-            rotvec = angle_rad * axis / np.linalg.norm(axis)
-            rot = R.from_rotvec(rotvec)
+    def _rotate_around_axis(self, origin, axis, angle_rad):
+        axis = np.array(axis, dtype=float)
+        norm = np.linalg.norm(axis)
+        axis = axis / norm
+        rot = R.from_rotvec(angle_rad * axis)
 
-            # 原点中心に回転してから戻す
-            rotated = rot.apply(points - origin) + origin
-            return rotated
-        
-        def get_normal_vector(origin,p0,p1):
-            v1 = np.array(p0) - np.array(origin)
-            v2 = np.array(p1) - np.array(origin)
-            normal = np.cross(v1, v2)
-            # ゼロ割防止のためチェック
-            norm = np.linalg.norm(normal)
-            if norm == 0:
-                raise ValueError("3点が同一直線上にあるため、法線ベクトルを定義できません。")
-            
-            return normal / norm
-            
-        def get_angle_rad(origin,p0,p1):
-            v1 = np.array(p0) - np.array(origin)
-            v2 = np.array(p1) - np.array(origin)
-            inner = np.inner(v1,v2)
-            v1_norm = np.linalg.norm(v1)
-            v2_norm = np.linalg.norm(v2)
-            theta = np.arccos(inner/(v1_norm*v2_norm))
-
-            return theta
-        
-        axis = get_normal_vector(origin,p0,p1)
-        angle_rad = get_angle_rad(origin,p0,p1)
-
-        self.vertices = rotate(self.vertices,axis,angle_rad,origin)
+        # 点群を原点中心に回転してから戻す
+        origin = np.array(origin, dtype=float)
+        self.vertices = rot.apply(self.vertices - origin) + origin
         self.center = self._calculate_center()
 
-    #立方体同士だとok、他は未確認
+    def _rotate_to_align_points(self, center, point_to_rotate, target_point):
+        v_before = point_to_rotate - center
+        v_after = target_point - center
+
+        norm_before = np.linalg.norm(v_before)
+        norm_after = np.linalg.norm(v_after)
+
+        v_before = v_before / norm_before
+        v_after = v_after / norm_after
+
+        cos_angle = np.clip(np.dot(v_before, v_after), -1.0, 1.0)
+        angle = np.arccos(cos_angle)
+
+        rotation_axis = np.cross(v_before, v_after)
+        norm_axis = np.linalg.norm(rotation_axis)
+        rotation_axis = rotation_axis / norm_axis
+
+        self._rotate_around_axis(center, rotation_axis, angle)
+
+    def _rotate_around_axis_to_align_points(self, axis_point1, axis_point2, point_to_rotate, target_point):
+        # 回転軸を計算
+        axis = axis_point2 - axis_point1
+        axis = axis / np.linalg.norm(axis)
+
+        # 回転前後の点を軸の始点に対する相対ベクトルに変換
+        p1 = point_to_rotate - axis_point1
+        p2 = target_point - axis_point1
+
+        # 軸方向の成分を除去（軸に垂直な平面上に投影）
+        p1_proj = p1 - np.dot(p1, axis) * axis
+        p2_proj = p2 - np.dot(p2, axis) * axis
+
+        # 投影ベクトルの長さをチェック
+        norm_p1 = np.linalg.norm(p1_proj)
+        norm_p2 = np.linalg.norm(p2_proj)
+
+        # 正規化
+        p1_proj = p1_proj / norm_p1
+        p2_proj = p2_proj / norm_p2
+
+        # 内積から角度を計算
+        cos_angle = np.clip(np.dot(p1_proj, p2_proj), -1.0, 1.0)
+        angle = np.arccos(cos_angle)
+
+        # 回転方向を決定（軸に対する外積方向）
+        cross_prod = np.cross(p1_proj, p2_proj)
+        if np.dot(cross_prod, axis) < 0:
+            angle = -angle
+
+        # 回転を実行
+        self._rotate_around_axis(axis_point1, axis, angle)
+
+    #多面体の面同士を合わせる
     def attach_to_face(self, target_polyhedron, target_face_index, self_face_index):
+
+        # 対象の面を取得
         target_face = target_polyhedron.faces[target_face_index]
         self_face = self.faces[self_face_index]
-        
+
+        # 1点目同士を合わせる
         t0 = target_polyhedron.vertices[target_face[0]]
-        t1 = target_polyhedron.vertices[target_face[1]]
-        t2 = target_polyhedron.vertices[target_face[-1]]
         s0 = self.vertices[self_face[0]]
-        
-        self.translate(s0,t0)
-        self.summary_for_rhino(2)
+        self.translate(s0, t0)
+
+        # 1点目を中心に2点目が合うように回転
+        t1 = target_polyhedron.vertices[target_face[1]]
         s1 = self.vertices[self_face[-1]]
-        self.rotate(t0,s1,t1)
-        self.summary_for_rhino(3)
+        self._rotate_to_align_points(t0, s1, t1)
+
+        # 1-2点目の軸周りに3点目が合うように回転
+        t2 = target_polyhedron.vertices[target_face[-1]]
         s2 = self.vertices[self_face[1]]
-        self.rotate(t0,s2,t2)
-        self.summary_for_rhino(4)
+        self._rotate_around_axis_to_align_points(t0, t1, s2, t2)
+
         return self
 
 
@@ -308,6 +334,7 @@ class DodecagonalPrism(Polyhedron):
         ]
         super().__init__("DodecagonalPrism", vertices, faces)
 
+<<<<<<< HEAD
 """
 cube_1 = Cube()
 cube_2 = Cube()
@@ -326,6 +353,8 @@ tetrahedron.summary_for_rhino(0)
 cube = Cube()
 cube.summary_for_rhino(1)
 """
+=======
+>>>>>>> 814af01b415c60918d45cf63e0116868b32a2297
 octahedron = Octahedron()
 octahedron.summary_for_rhino(2)
 triangularprism = TriangularPrism()
@@ -341,6 +370,10 @@ dodecagonalprism.summary_for_rhino(6)
 
 triangularprism.translate((0,0,0),(3,3,3))
 triangularprism.summary_for_rhino(7)
+<<<<<<< HEAD
 
 triangularprism = triangularprism.attach_to_face(octahedron,0,2)
+=======
+triangularprism.attach_to_face(octahedron,0,2)
+>>>>>>> 814af01b415c60918d45cf63e0116868b32a2297
 triangularprism.summary_for_rhino(8)
