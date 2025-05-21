@@ -333,40 +333,26 @@ class DodecagonalPrism(Polyhedron):
             [23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12]
         ]
         super().__init__("DodecagonalPrism", vertices, faces)
-
-<<<<<<< HEAD
 """
-cube_1 = Cube()
-cube_2 = Cube()
-
-cube_1.summary_for_rhino(0)
-cube_2.rotate(cube_2.vertices[0],cube_2.vertices[3],cube_2.vertices[2])
-#cube_2.rotate(cube_2.vertices[0],cube_2.vertices[3],cube_2.vertices[7])
-cube_2.translate(cube_2.vertices[0],(3,3,3))
-cube_2.summary_for_rhino(1)
-cube_2 = cube_2.attach_to_face(cube_1,0,3)
-"""
-
 tetrahedron = Tetrahedron()
 tetrahedron.summary_for_rhino(0)
 cube = Cube()
 cube.summary_for_rhino(1)
+"""
 octahedron = Octahedron()
 octahedron.summary_for_rhino(2)
 triangularprism = TriangularPrism()
 triangularprism.summary_for_rhino(3)
+"""
 hexagonalprism = HexagonalPrism()
 hexagonalprism.summary_for_rhino(4)
 octagonalprism = OctagonalPrism()
 octagonalprism.summary_for_rhino(5)
 dodecagonalprism = DodecagonalPrism()
 dodecagonalprism.summary_for_rhino(6)
+"""
 triangularprism.translate((0,0,0),(3,3,3))
 triangularprism.summary_for_rhino(7)
-<<<<<<< HEAD
-
 triangularprism = triangularprism.attach_to_face(octahedron,0,2)
-=======
 triangularprism.attach_to_face(octahedron,0,2)
->>>>>>> 814af01b415c60918d45cf63e0116868b32a2297
 triangularprism.summary_for_rhino(8)
