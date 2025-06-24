@@ -2,6 +2,23 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 import copy
 
+def main():
+    cuboctahedron = Cuboctahedron()
+    cuboctahedron.summary_for_rhino(1)
+    icosidodecahedron = Icosidodecahedron()
+    icosidodecahedron.summary_for_rhino(2)
+    truncatedtetrahedron = TruncatedTetrahedron()
+    truncatedtetrahedron.summary_for_rhino(3)
+    truncatedoctahedron = TruncatedOctahedron()
+    truncatedoctahedron.summary_for_rhino(4)
+    truncatedcube = TruncatedCube()
+    truncatedcube.summary_for_rhino(5)
+    rhombicuboctahedron = Rhombicuboctahedron()
+    rhombicuboctahedron.summary_for_rhino(6)
+    truncatedcuboctahedron = TruncatedCuboctahedron()
+    truncatedcuboctahedron.summary_for_rhino(7)
+
+    
 class Polyhedron:
     def __init__(self, name, vertices, faces):
         self.name = name
@@ -291,7 +308,7 @@ class OctagonalPrism(Polyhedron):
         ]
         super().__init__("OctagonalPrism", vertices, faces)
 
-# 正十二角柱 座標、面データなし
+# 正十二角柱
 class DodecagonalPrism(Polyhedron):
     def __init__(self):
         vertices = [
@@ -343,47 +360,34 @@ class DodecagonalPrism(Polyhedron):
 class Cuboctahedron(Polyhedron):
     def __init__(self):
         vertices = [
-            [1.93185165, 0.0, 0.5],
-            [1.67303261, 0.96592583, 0.5],
-            [0.96592583, 1.67303261, 0.5],
-            [0.0, 1.93185165, 0.5],
-            [-0.96592583, 1.67303261, 0.5],
-            [-1.67303261, 0.96592583, 0.5],
-            [-1.93185165, 0.0, 0.5],
-            [-1.67303261, -0.96592583, 0.5],
-            [-0.96592583, -1.67303261, 0.5],
-            [-0.0, -1.93185165, 0.5],
-            [0.96592583, -1.67303261, 0.5],
-            [1.67303261, -0.96592583, 0.5],
-            [1.93185165, 0.0, -0.5],
-            [1.67303261, 0.96592583, -0.5],
-            [0.96592583, 1.67303261, -0.5],
-            [0.0, 1.93185165, -0.5],
-            [-0.96592583, 1.67303261, -0.5],
-            [-1.67303261, 0.96592583, -0.5],
-            [-1.93185165, 0.0, -0.5],
-            [-1.67303261, -0.96592583, -0.5],
-            [-0.96592583, -1.67303261, -0.5],
-            [-0.0, -1.93185165, -0.5],
-            [0.96592583, -1.67303261, -0.5],
-            [1.67303261, -0.96592583, -0.5]
+            [-0.5, -0.8660254, -0.0],
+            [-1.0, 0.0, -0.0],
+            [-0.5, 0.8660254, -0.0],
+            [0.5, 0.8660254, -0.0],
+            [1.0, 0.0, -0.0],
+            [0.5, -0.8660254, -0.0],
+            [-0.5, -0.28867513, -0.81649658],
+            [0.0, 0.57735027, -0.81649658],
+            [0.5, -0.28867513, -0.81649658],
+            [0.0, -0.57735027, 0.81649658],
+            [0.5, 0.28867513, 0.81649658],
+            [-0.5, 0.28867513, 0.81649658],
         ]
-
         faces = [
-            [0, 1, 13, 12],
-            [1, 2, 14, 13],
-            [2, 3, 15, 14],
-            [3, 4, 16, 15],
-            [4, 5, 17, 16],
-            [5, 6, 18, 17],
-            [6, 7, 19, 18],
-            [7, 8, 20, 19],
-            [8, 9, 21, 20],
-            [9, 10, 22, 21],
-            [10, 11, 23, 22],
-            [11, 0, 12, 23],
-            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-            [23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12]
+            [0, 1, 6],
+            [0, 6, 8, 5],
+            [0, 5, 9],
+            [0, 9, 11, 1],
+            [1, 2, 7, 6],
+            [1, 11, 2],
+            [2, 3, 7],
+            [2, 11, 10, 3],
+            [3, 4, 8, 7],
+            [3, 10, 4],
+            [4, 5, 8],
+            [4, 10, 9, 5],
+            [6, 7, 8],
+            [9, 10, 11],
         ]
         super().__init__("Cuboctahedron", vertices, faces)
 
@@ -724,30 +728,5 @@ class TruncatedCuboctahedron(Polyhedron):
         ]
         super().__init__("TruncatedCuboctahedron", vertices, faces)
 
-
-
-"""
-tetrahedron = Tetrahedron()
-tetrahedron.summary_for_rhino(0)
-cube = Cube()
-cube.summary_for_rhino(1)
-"""
-octahedron = Octahedron()
-octahedron.summary_for_rhino(2)
-triangularprism = TriangularPrism()
-triangularprism.summary_for_rhino(3)
-"""
-hexagonalprism = HexagonalPrism()
-hexagonalprism.summary_for_rhino(4)
-octagonalprism = OctagonalPrism()
-octagonalprism.summary_for_rhino(5)
-dodecagonalprism = DodecagonalPrism()
-dodecagonalprism.summary_for_rhino(6)
-"""
-triangularprism.translate((0,0,0),(3,3,3))
-triangularprism.summary_for_rhino(7)
-triangularprism.attach_to_face(octahedron,0,2)
-triangularprism.summary_for_rhino(8)
-
-dodecagonalprism = DodecagonalPrism()
-dodecagonalprism.summary_for_rhino(9)
+if __name__ == "__main__":
+    main()
