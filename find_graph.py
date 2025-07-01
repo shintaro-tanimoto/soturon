@@ -2,10 +2,33 @@ import itertools
 import copy
 import networkx as nx
 import matplotlib.pyplot as plt
-import time
+import spacefillingunit_restriction as rest
 
-# 計測開始
-start = time.perf_counter()
+def main():
+    unit_number = 27
+    filtered_edges_list = find_filtered_edges_list(unit_number)
+    #print(filtered_edges_list)
+
+def find_filtered_edges_list(unit_number):
+    # 条件
+    n, restricted_edges, node_names, node_weights = rest.restriction(unit_number)
+
+    # 頂点数 n の全域木
+    edges_list = enumerate_spanning_trees(n)
+
+    print(f"頂点数 {n} の全域木の数: {len(edges_list)}")
+
+    # 制約によるフィルタリング
+    filtered_edges_list = filter_edges(edges_list,restricted_edges)
+
+    print(len(filtered_edges_list))
+    """
+    unique_graphs = make_unique_graphs(filtered_edges_list,node_names,node_weights)
+
+    print(f"同型判定の絞り込みによる全域木の数{len(unique_graphs)}")
+    draw_graph(unique_graphs)
+    """
+    return filtered_edges_list
 
 # Union-Find
 class UnionFind():
@@ -115,29 +138,5 @@ def draw_graph(graphs_list):
         nx.draw(i, pos, with_labels=True, labels=labels, node_color=colors)
         plt.show()
 
-
-# 条件(立体番号13)
-n = 4
-restricted_edges = [(0,3),(1,2),(2,3)]
-node_names = ["A","A","B","B"]
-node_weights = [1,1,2,2]
-
-# 頂点数 n の全域木
-edges_list = enumerate_spanning_trees(n)
-"""
-print(trees)
-"""
-print(f"頂点数 {n} の全域木の数: {len(edges_list)}")
-
-# 制約によるフィルタリング
-filtered_edges_list = filter_edges(edges_list,restricted_edges)
-
-print(len(filtered_edges_list))
-unique_graphs = make_unique_graphs(filtered_edges_list,node_names,node_weights)
-
-# 計測終了
-end = time.perf_counter()
-print('{:.2f}'.format((end-start)))
-
-print(f"同型判定の絞り込みによる全域木の数{len(unique_graphs)}")
-draw_graph(unique_graphs)
+if __name__ == "__main__":
+    main()
