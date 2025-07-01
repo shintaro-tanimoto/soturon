@@ -157,15 +157,11 @@ class Polyhedron:
         t0 = target_polyhedron.vertices[target_face[0]]
         s0 = self.vertices[self_face[0]]
         self.translate(s0, t0)
-        print("\n--- After Step 1: Translation ---")
-        self.summary_for_rhino("step1")
 
         # 1点目を中心に2点目が合うように回転
         t1 = target_polyhedron.vertices[target_face[1]]
         s1 = self.vertices[self_face[-1]]
         self._rotate_to_align_points(t0, s1, t1)
-        print("\n--- After Step 2: First Rotation ---")
-        self.summary_for_rhino("step2")
 
         # 1-2点目の軸周りに3点目が合うように回転
         t2 = target_polyhedron.vertices[target_face[-1]]
