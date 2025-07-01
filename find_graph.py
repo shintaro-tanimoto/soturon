@@ -5,30 +5,27 @@ import matplotlib.pyplot as plt
 import spacefillingunit_restriction as rest
 
 def main():
-    unit_number = 27
-    filtered_edges_list = find_filtered_edges_list(unit_number)
-    #print(filtered_edges_list)
+    unit_number = 26
+    unique_graphs_list = find_unique_graphs_list(unit_number)
 
-def find_filtered_edges_list(unit_number):
+def find_unique_graphs_list(unit_number):
     # 条件
     n, restricted_edges, node_names, node_weights = rest.restriction(unit_number)
 
     # 頂点数 n の全域木
     edges_list = enumerate_spanning_trees(n)
 
-    print(f"頂点数 {n} の全域木の数: {len(edges_list)}")
+    """print(f"頂点数 {n} の全域木の数: {len(edges_list)}")"""
 
     # 制約によるフィルタリング
     filtered_edges_list = filter_edges(edges_list,restricted_edges)
 
-    print(len(filtered_edges_list))
-    """
-    unique_graphs = make_unique_graphs(filtered_edges_list,node_names,node_weights)
+    """print(len(filtered_edges_list))"""
 
-    print(f"同型判定の絞り込みによる全域木の数{len(unique_graphs)}")
-    draw_graph(unique_graphs)
-    """
-    return filtered_edges_list
+    unique_graphs_list = make_unique_graphs(filtered_edges_list,node_names,node_weights)
+    """print(f"同型判定の絞り込みによる全域木の数{len(unique_graphs_list)}")"""
+
+    return unique_graphs_list
 
 # Union-Find
 class UnionFind():
