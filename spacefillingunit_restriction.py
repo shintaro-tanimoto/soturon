@@ -53,7 +53,7 @@ def restriction(unit_number):
         n = 4
         restricted_edges = [(0,2),(1,3)]
         node_names = ["D","D","D","D"] 
-        node_weights = [1,1,1,1] # NetworkXコードでは全てweight=1だが、図を見る限りは異なる可能性があるため、調整の余地あり
+        node_weights = [1,1,1,1]
         return n, restricted_edges, node_names, node_weights
 
     elif unit_number == 13:
@@ -95,11 +95,11 @@ def restriction(unit_number):
         node_names = ["N","L","J","J"] 
         node_weights = [1,2,3,3] 
         return n, restricted_edges, node_names, node_weights
-
+#修正した
     elif unit_number == 18:
         # 条件(立体番号18)
         n = 5
-        restricted_edges = [(1,4),(2,3),(3,4)]
+        restricted_edges = [(0,2),(1,4),(2,3),(3,4)]
         node_names = ["C","D","D","A","A"] 
         node_weights = [1,2,2,3,3] 
         return n, restricted_edges, node_names, node_weights
@@ -159,27 +159,27 @@ def restriction(unit_number):
         node_names = ["G","E","E","B","B","B"] 
         node_weights = [1,2,2,3,3,3] 
         return n, restricted_edges, node_names, node_weights
-#絶対間違ってる未修正(2,3),(2,4)はない
+
     elif unit_number == 26:
         # 条件(立体番号26)
         n = 8
-        restricted_edges = [(0,5),(0,6),(0,7),(2,3),(2,4),(3,4),(2,7),(3,5),(4,6),(5,6),(5,7),(6,7)] #cite: 15
+        restricted_edges = [(0,5),(0,6),(0,7),(2,3),(2,4),(2,7),(3,4),(3,5),(4,6),(5,6),(5,7),(6,7)]
         node_names = ["K","M","F","F","F","B","B","B"] 
         node_weights = [1,2,3,3,3,4,4,4] 
         return n, restricted_edges, node_names, node_weights
-#元データが論文にない
+#修正した
     elif unit_number == 27:
         # 条件(立体番号27)
         n = 9
-        restricted_edges = [(0,2),(0,5),(1,3),(1,4),(1,5),(1,7),(1,8),(2,4),(2,5),(2,6),(2,8),(3,5),(3,6),(3,7),(3,8),(4,5),(4,6),(4,7),(4,8),(5,6),(5,7),(6,8)]
+        restricted_edges = [(0,2),(0,5),(1,3),(1,4),(1,5),(1,6),(1,7),(2,4),(2,5),(2,6),(2,8),(3,5),(3,6),(3,7),(3,8),(4,6),(4,7),(4,8),(5,6),(6,8),(7,8)]
         node_names = ["E","A","A","A","A","A","A","A","A"] 
         node_weights = [1,2,2,2,2,2,2,2,2] 
         return n, restricted_edges, node_names, node_weights
-#元データが論文にない
+#修正した
     elif unit_number == 28:
         # 条件(立体番号28)
         n = 10
-        restricted_edges = [(0,1),(0,3),(0,4),(0,8),(0,9),(1,3),(1,4),(1,5),(1,7),(1,8),(2,4),(2,5),(2,6),(2,7),(2,8),(2,9),(3,4),(3,5),(3,6),(3,8),(4,7),(4,9),(5,6),(5,7),(5,8),(5,9),(6,7),(6,8),(6,9),(7,8),(7,9),(8,9)]
+        restricted_edges = [(0,1),(0,3),(0,4),(0,8),(0,9),(1,3),(1,4),(1,6),(1,7),(2,4),(2,5),(2,6),(2,7),(2,8),(2,9),(3,4),(3,5),(3,6),(3,8),(4,7),(4,9),(5,6),(5,7),(5,8),(5,9),(6,7),(6,8),(6,9),(7,8),(7,9),(8,9)]
         node_names = ["C","C","D","D","D","D","A","A","A","A"] 
         node_weights = [1,1,2,2,2,2,3,3,3,3] 
         return n, restricted_edges, node_names, node_weights
