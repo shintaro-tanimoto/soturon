@@ -4,33 +4,36 @@ import copy
 
 def main():
     tetrahedron = Tetrahedron()
-    tetrahedron.summary_for_rhino(1)
+    #tetrahedron.summary_for_rhino(1)
     cube = Cube()
-    cube.summary_for_rhino(2)
+    #cube.summary_for_rhino(2)
     octahedron = Octahedron()
-    octahedron.summary_for_rhino(3)
+    #octahedron.summary_for_rhino(3)
     triangularprism = TriangularPrism()
-    triangularprism.summary_for_rhino(4)
+    triangularprism.summary_for_rhino(1)
     hexagonalprism = HexagonalPrism()
-    hexagonalprism.summary_for_rhino(5)
+    #hexagonalprism.summary_for_rhino(5)
     octagonalprism = OctagonalPrism()
-    octagonalprism.summary_for_rhino(6)
+    #octagonalprism.summary_for_rhino(6)
     dodecagonalprism = DodecagonalPrism()
-    dodecagonalprism.summary_for_rhino(7)
+    #dodecagonalprism.summary_for_rhino(7)
     cuboctahedron = Cuboctahedron()
-    cuboctahedron.summary_for_rhino(8)
+    #cuboctahedron.summary_for_rhino(8)
     icosidodecahedron = Icosidodecahedron()
-    icosidodecahedron.summary_for_rhino(9)
+    #icosidodecahedron.summary_for_rhino(9)
     truncatedtetrahedron = TruncatedTetrahedron()
-    truncatedtetrahedron.summary_for_rhino(10)
+    #truncatedtetrahedron.summary_for_rhino(10)
     truncatedoctahedron = TruncatedOctahedron()
-    truncatedoctahedron.summary_for_rhino(11)
+    #truncatedoctahedron.summary_for_rhino(11)
     truncatedcube = TruncatedCube()
-    truncatedcube.summary_for_rhino(12)
+    #truncatedcube.summary_for_rhino(12)
     rhombicuboctahedron = Rhombicuboctahedron()
-    rhombicuboctahedron.summary_for_rhino(13)
+    #rhombicuboctahedron.summary_for_rhino(13)
     truncatedcuboctahedron = TruncatedCuboctahedron()
-    truncatedcuboctahedron.summary_for_rhino(14)
+    #truncatedcuboctahedron.summary_for_rhino(14)
+
+    tetrahedron.attach_polyhedron(triangularprism)
+    tetrahedron.summary_for_rhino(2)
 
     
 class Polyhedron:
@@ -146,7 +149,7 @@ class Polyhedron:
         # 回転を実行
         self._rotate_around_axis(axis_point1, axis, angle)
 
-    #多面体の面同士を合わせる
+#多面体の面同士を合わせる
     def attach_to_face(self, target_polyhedron, target_face_index, self_face_index):
 
         # 対象の面を取得
@@ -169,6 +172,19 @@ class Polyhedron:
         self._rotate_around_axis_to_align_points(t0, t1, s2, t2)
 
         return self
+
+#test 未確認
+    def attach_polyhedron(self, target_polyhedron):
+        self_faces = self.faces
+        target_faces = target_polyhedron.faces
+        for i in range(len(target_faces)):
+            n_1 = len(target_faces[i])
+            for j in range(len(self_faces)):
+                n_2 = len(self_faces[j])
+                if n_1 == n_2:
+                    self.attach_to_face(target_polyhedron, i,j)
+                    return self
+        print("error:同じ面が存在しません")
 
 
 # 正四面体
