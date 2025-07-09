@@ -89,6 +89,9 @@ class Polyhedron:
     def _rotate_around_axis(self, origin, axis, angle_rad):
         axis = np.array(axis, dtype=float)
         norm = np.linalg.norm(axis)
+        # 軸がゼロベクトルの場合を処理
+        if norm < 1e-9: # ほぼゼロのノルムをチェックするための小さなイプシロン
+            return
         axis = axis / norm
         rot = R.from_rotvec(angle_rad * axis)
 
@@ -104,6 +107,10 @@ class Polyhedron:
         norm_before = np.linalg.norm(v_before)
         norm_after = np.linalg.norm(v_after)
 
+        # ベクトルがゼロまたはほぼゼロの場合を処理
+        if norm_before < 1e-9 or norm_after < 1e-9:
+            return
+
         v_before = v_before / norm_before
         v_after = v_after / norm_after
 
@@ -112,6 +119,10 @@ class Polyhedron:
 
         rotation_axis = np.cross(v_before, v_after)
         norm_axis = np.linalg.norm(rotation_axis)
+
+        if norm_axis < 1e-9: # ベクトルが平行の場合、rotation_axisはゼロ
+            return # 回転不要または軸が曖昧
+        
         rotation_axis = rotation_axis / norm_axis
 
         self._rotate_around_axis(center, rotation_axis, angle)
@@ -119,7 +130,11 @@ class Polyhedron:
     def _rotate_around_axis_to_align_points(self, axis_point1, axis_point2, point_to_rotate, target_point):
         # 回転軸を計算
         axis = axis_point2 - axis_point1
-        axis = axis / np.linalg.norm(axis)
+        norm_axis_line = np.linalg.norm(axis)
+        if norm_axis_line < 1e-9:
+            return # 点が同じ場合、回転軸を定義できない
+
+        axis = axis / norm_axis_line
 
         # 回転前後の点を軸の始点に対する相対ベクトルに変換
         p1 = point_to_rotate - axis_point1
@@ -132,6 +147,9 @@ class Polyhedron:
         # 投影ベクトルの長さをチェック
         norm_p1 = np.linalg.norm(p1_proj)
         norm_p2 = np.linalg.norm(p2_proj)
+
+        if norm_p1 < 1e-9 or norm_p2 < 1e-9:
+            return # 投影された点が原点にある場合、角度を決定できない
 
         # 正規化
         p1_proj = p1_proj / norm_p1
