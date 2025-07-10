@@ -95,11 +95,11 @@ def restriction(unit_number):
         node_names = ["N","L","J","J"] 
         node_weights = [1,2,3,3] 
         return n, restricted_edges, node_names, node_weights
-#修正した
+
     elif unit_number == 18:
         # 条件(立体番号18)
         n = 5
-        restricted_edges = [(0,2),(1,4),(2,3),(3,4)]
+        restricted_edges = [(1,4),(2,3),(3,4)]
         node_names = ["C","D","D","A","A"] 
         node_weights = [1,2,2,3,3] 
         return n, restricted_edges, node_names, node_weights
